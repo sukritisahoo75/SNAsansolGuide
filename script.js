@@ -1,18 +1,18 @@
-// Firebase Config (replace with your own from Firebase Console)
+// Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyDWA8vGHOsCaE_3CMrZ4gmsYSXoqMuoE4s",
+    authDomain: "snasansolguide.firebaseapp.com",
+    projectId: "snasansolguide",
+    storageBucket: "snasansolguide.firebasestorage.app",
+    messagingSenderId: "805880502572",
+    appId: "1:805880502572:web:4fb0296487e28f37573489"
 };
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// Sample Listings (you can add more manually or fetch from Firestore)
+// Sample Listings
 const listings = [
     { name: "Hotel Asansol Inn", type: "Hotel", price: "₹2000/night", lat: 23.6868, lng: 86.9754 },
     { name: "PG Near Station", type: "Room", price: "₹5000/month", lat: 23.6833, lng: 86.9667 }
@@ -75,22 +75,23 @@ function loadReviews() {
     });
 }
 
-// Google Maps Integration
+// Initialize Leaflet Map
 function initMap() {
-    const asansol = { lat: 23.6833, lng: 86.9667 }; // Center of Asansol
-    const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 12,
-        center: asansol
-    });
+    const asansol = [23.6833, 86.9667];
+    const map = L.map('map').setView(asansol, 12); // Zoom level 12
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
     listings.forEach(listing => {
-        new google.maps.Marker({
-            position: { lat: listing.lat, lng: listing.lng },
-            map: map,
-            title: listing.name
-        });
+        L.marker([listing.lat, listing.lng])
+            .addTo(map)
+            .bindPopup(`<strong>${listing.name}</strong><br>${listing.price}`);
     });
 }
 
-// Initialize
+// Initialize everything
 displayListings();
 loadReviews();
+initMap();
